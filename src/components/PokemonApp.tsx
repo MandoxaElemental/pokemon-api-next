@@ -3,18 +3,21 @@
 import React, { useEffect, useState } from 'react'
 import '../styles/style.css'
 import { FetchData } from '@/scripts/apicall'
+import { GetLocation } from '@/scripts/location'
+import { EvolutionChain } from '@/scripts/family'
 
 const PokemonApp = () => {
-    const [name, setName] = useState('')
+    const [id, setId] = useState('')
+    const [name, setName] = useState('Jigglypuff')
     const [firstType, setFirstType] = useState('')
     const [secondType, setSecondType] = useState('')
     const [firstTypePic, setFirstTypePic] = useState('')
     const [secondTypePic, setSecondTypePic] = useState('')
     const [cry, setCry] = useState('')
-    const [ability1, setAbility1] = useState('')
-    const [ability2, setAbility2] = useState('')
-    const [ability3, setAbility3] = useState('')
-    const [defaultImg, setDefault] = useState('')
+    const [location, setLocation] = useState('')
+    const [locationLink, setLocationLink] = useState('')
+    const [image, setImage] = useState('')
+    const [abilities, setAbilities] = useState([])
     const [shiny, setShiny] = useState('')
     const [hp, setHP] = useState('')
     const [attack, setAttack] = useState('')
@@ -22,18 +25,49 @@ const PokemonApp = () => {
     const [spAttack, setSpAttack] = useState('')
     const [spDefense, setSpDefense] = useState('')
     const [speed, setSpeed] = useState('')
+    const [moves, setMoves] = useState([])
+
+    function play(){
+        new Audio(cry).play()
+        }
 
     const Pokemon = async () => {
-        const PokemonInfo = await FetchData();
+        const PokemonInfo = await FetchData(name);
         console.log(PokemonInfo)
         setName(`#${PokemonInfo.id} - ${ToUpper(PokemonInfo.name.replaceAll("-", " "))}`)
         setFirstType(PokemonInfo.types[0].type.name)
+        setCry(PokemonInfo.cries.latest)
         setSecondType(PokemonInfo.types[1].type.name)
-        console.log(firstType)
-        console.log(secondType)
+        setImage(PokemonInfo.sprites.other.home.front_default)
+        setAbilities(PokemonInfo.abilities)
+        setLocationLink(PokemonInfo.location_area_encounters)
+        setHP(PokemonInfo.stats[0].base_stat)
+        setAttack(PokemonInfo.stats[1].base_stat)
+        setDefense(PokemonInfo.stats[2].base_stat)
+        setSpAttack(PokemonInfo.stats[3].base_stat)
+        setSpDefense(PokemonInfo.stats[4].base_stat)
+        setSpeed(PokemonInfo.stats[5].base_stat)
         Types1()
         Types2()
+        setMoves(PokemonInfo.moves)
+        PokemonLocation(locationLink)
+        PokemonEvolution(name)
+        play()
     }
+
+        const PokemonLocation = async (link: string) => {
+            const LocationArr = await GetLocation(link)
+            let LocationNum = Math.floor(Math.random() * LocationArr.length);
+            if (LocationArr.length === 0) {
+                setLocation("N/A")
+            } else {
+                setLocation(ToUpper(LocationArr[LocationNum].location_area.name.replaceAll("-", " ")))
+            }
+        }
+        const PokemonEvolution = async (link: string) => {
+            const Evolution = await EvolutionChain(link)
+            console.log(Evolution)
+        }
 
     function ToUpper(input: string) {
         return input
@@ -168,13 +202,13 @@ const PokemonApp = () => {
         }
       }
 
-    useEffect(() => {
+      useEffect(() => {
         Pokemon();
-      }, [name, firstType, secondType]);
+      }, []);
 
   return (
     <div>
-    <div id="dex">
+    <div className='pb-2.5'>
         <div className="top-grid grid auto-cols-auto p-2.5">
           <div className="audio-grid">
             <button id="mute">
@@ -198,7 +232,7 @@ const PokemonApp = () => {
       <div className="topBar nameBar grid p-3 ">
         <div className="flex justify-start text-start"><img id="previous" className="arrow" src="/assets/caret-left-fill.svg" alt="left"/></div>
         <div className="flex justify-center">
-          <h1 className="text-3xl font-bold" id="name">{name}</h1>
+          <h1 className="text-3xl font-bold text-black" id="name">{name}</h1>
         </div>
         <div className="flex justify-end"><img id="next" className="arrow" src="/assets/caret-right-fill.svg" alt="right"/></div>
       </div>
@@ -210,7 +244,7 @@ const PokemonApp = () => {
           </div>
           <div className="flex justify-center">
               <div>
-                  <img width="200px" id="pokemonImg" src="" alt="Pokemon" />
+                  <img onClick={play} width="200px" id="pokemonImg" src={image} alt="Pokemon" />
               </div>
             </div>
             <div>
@@ -226,30 +260,32 @@ const PokemonApp = () => {
                 <img className="notSaved" id="savedPokemon" src="/assets/2Active.svg" alt="saved"/>
                 <h1 className="text-3xl font-bold">Info</h1>
             </div>
-            <div className="p-2.5">
+            <div className="p-2.5 text-black">
                 <h1 className="text-2xl font-bold">Abilities</h1>
                 <div className="text-lg">
-                    <p id="ability1"></p>
-                    <p id="ability2"></p>
-                    <p id="ability3"></p>
+                {abilities.map((perc: string[], i: number) => {
+                return (
+                  <ul key={i}>{ToUpper(perc.ability.name.replaceAll("-", " "))}</ul>
+                )
+              })}
                 </div>
                 <h1 className="text-2xl font-bold">Location</h1>
-                <p className="text-lg" id="location"></p>
+                <p className="text-lg" id="location">{location}</p>
             </div>
         </div>
         
         <div className="stat-grid" id="statsDiv">
             <h1 className="text-3xl topBar flex justify-center align-middle rounded-t-xl font-bold">Stats</h1>
-            <div className="grid grid-cols-2 background rounded-b-xl sm:text-md text-center statList p-5">
+            <div className="grid grid-cols-2 background rounded-b-xl sm:text-md text-center statList p-5 text-black">
                 <div>
-                    <p id="HP"></p>
-                    <p id="Attack"></p>
-                    <p id="Defense"></p>
+                    <p>HP: {hp}</p>
+                    <p>Attack: {attack}</p>
+                    <p>Defense: {defense}</p>
                 </div>
                 <div>
-                    <p id="SpAttack"></p>
-                    <p id="SpDefense"></p>
-                    <p id="Speed"></p>
+                    <p>Sp.Attack: {spAttack}</p>
+                    <p>Sp.Defense: {spDefense}</p>
+                    <p>Speed: {speed}</p>
                 </div>
             </div>
         </div>
@@ -261,12 +297,19 @@ const PokemonApp = () => {
         </div>
         <div className="moves-grid background rounded-xl">
           <h1 className="text-3xl topBar flex justify-center rounded-t-xl font-bold">Moves</h1>
-          <div className="moveList text-lg text-center">
-            <ul id="list"></ul>
+          <div className="moveList text-lg text-center text-black">
+            <ul id="list">
+            {moves.map((perc: string[], i: number) => {
+                return (
+                  <ul key={i}>{ToUpper(perc.move.name.replaceAll("-", " "))}</ul>
+                )
+              })}
+              </ul>
           </div>
         </div>
       </div>
     </div>
+    <audio id="pokemonCry" src={cry}></audio>
     </div>
   )
 }

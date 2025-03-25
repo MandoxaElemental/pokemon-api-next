@@ -1,0 +1,274 @@
+@font-face {
+    font-family: customFont;
+    src: url(/assets/fonts/FOT-KafuTechnoStd-H.otf);
+}
+
+body{
+    background-image: url('/Background.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    font-family: customFont;
+}
+
+#logo{
+    max-height: 200px;
+    width: auto;
+}
+
+.hidden{
+    display: none
+}
+
+#moveExit:hover{
+    opacity: 50%;
+}
+
+.homeScreen{
+    color: white;
+    background-image: url('/Background.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    margin: 0px;
+    display: cover;
+    position: absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    height:100%;
+    width:100%;
+}
+.home-box > h1 {
+    font-size: 75px;
+}
+
+.nameBar{
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.arrow:hover{
+    opacity: 60%;
+}
+
+.start-div{
+    font-size: 40px;
+}
+
+.dexClass{
+    display: none;
+}
+
+.info-grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+ }
+
+.mainImg{
+    background-image: url('/assets/pokeball-pokemon-catch.svg');
+    background-repeat: no-repeat;
+    background-size: 250px;
+    background-position: center;
+
+}
+
+.moveList{
+    height: 150px;
+    overflow: scroll;
+}
+.moveDescBox{
+    padding: 15px;
+    background-color: white;
+}
+.statList{
+    height: 150px;
+}
+.familyList{
+    height: 150px;
+    max-height: 150px;
+    overflow: scroll;
+}
+
+.infoBox{
+    grid-column: 2/4;
+    background-color: rgba(255, 255, 255, 0.463);
+}
+
+.background{
+    background-color: rgba(255, 255, 255, 0.463);
+}
+
+.topBar{
+    background-color: #40B2AE;
+    background: linear-gradient(90deg, rgba(64,178,174,1) 0%, rgba(114,201,181,1) 50%, rgba(64,178,174,1) 100%);
+    padding: 10px;
+}
+
+#family > img{
+    width: 150px;
+}
+#family > img:hover{
+    opacity: 70%;
+}
+
+input{
+    background-color: rgba(255, 255, 255, 0.463);
+    height: 40px;
+    width: 85%;
+    text-align: center;
+}
+.savedBtn{
+    grid-column: 3/4;
+}
+#savedBtn{
+    height: 40px;
+}
+#savedBtn:hover{
+    opacity: 80%;
+}
+
+.searchBar{
+    display: flex;
+    align-items: center;
+}
+.searchBtn{
+    background-color: #40B2AE;
+    background: linear-gradient(90deg, rgba(64,178,174,1) 0%, rgba(114,201,181,1) 50%, rgba(64,178,174,1) 100%);
+    height: 40px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.searchBtn:hover{
+    opacity: 80%;
+}
+
+.randomBtn{
+    background-color: #F5AD1A;
+    background: linear-gradient(90deg, rgba(245,173,26,1) 0%, rgba(255,199,84,1) 50%, rgba(245,173,26,1) 100%);}
+
+#shiny:hover{
+    opacity: 60%;
+}
+#audioOn:hover{
+    opacity: 60%;
+}
+
+#savedPokemon{
+    height: 40px;
+}
+#savedPokemon:hover{
+    opacity: 60%;
+}
+
+.dropdownContent {
+    position: absolute;
+    overflow: auto;
+    right: 0;
+    top: 9.5%;
+    width: 350px;
+    max-width: 400px;
+  }
+
+  .topBarSaved{
+    background-color: #F5AD1A;
+    background: linear-gradient(90deg, rgba(245,173,26,1) 0%, rgba(255,199,84,1) 50%, rgba(245,173,26,1) 100%);    padding: 10px;
+}
+
+.removePokemon{
+    padding-left: 20px;
+}
+
+.removePokemon:hover{
+    opacity: 50%;
+}
+
+#savedList{
+    max-height: 250px;
+    overflow: scroll;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.moves:hover{
+    opacity: 60%;
+}
+
+.move-desc-box{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+}
+
+/* .family-grid{
+    border: thick solid #F5AD1A;
+    border-radius: ;
+} */
+
+@media (max-width:768px){
+    .responsive-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .infoBox{
+        grid-column: 2/3;
+    }
+    .family-grid{
+        grid-row: 3/4;
+        grid-column: 1/2;
+    }
+    .moves-grid{
+        grid-row: 2/4;
+        grid-column: 2/3;
+    }
+    .moveList{
+        height: 350px;
+    }
+
+}
+@media (max-width:640px){
+.top-grid{
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.searchBar{
+    grid-row: 2/3;
+    grid-column: 1/3;
+    display: flex;
+    justify-content: center;
+}
+
+ .responsive-grid{
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-rows: auto;
+ }
+ .infoBox{
+    grid-row: 2/3;
+    grid-column: 1/2;
+}
+.stat-grid{
+    grid-row: 3/4;
+    grid-column: 1/2;
+}
+.family-grid{
+    grid-row: 5/6;
+    grid-column: 1/2;
+}
+.moves-grid{
+    grid-row: 4/5;
+    grid-column: 1/2;
+}
+.moveList{
+    max-height: 250px;
+}
+.familyList{
+    height: 200px;
+    max-height: 200px;
+    overflow: scroll;
+}
+
+}

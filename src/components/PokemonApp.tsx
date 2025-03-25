@@ -7,8 +7,10 @@ import { GetLocation } from '@/scripts/location'
 import { EvolutionChain } from '@/scripts/family'
 
 const PokemonApp = () => {
+    const [userInput, setUserInput] = useState('')
     const [id, setId] = useState('')
-    const [name, setName] = useState('Jigglypuff')
+    const [random, setRandom] = useState('')
+    const [name, setName] = useState('')
     const [firstType, setFirstType] = useState('')
     const [secondType, setSecondType] = useState('')
     const [firstTypePic, setFirstTypePic] = useState('')
@@ -31,12 +33,13 @@ const PokemonApp = () => {
         new Audio(cry).play()
         }
 
-    const Pokemon = async () => {
-        const PokemonInfo = await FetchData(name);
+    const Pokemon = async (input: string) => {
+        const PokemonInfo = await FetchData(input);
         console.log(PokemonInfo)
         setName(`#${PokemonInfo.id} - ${ToUpper(PokemonInfo.name.replaceAll("-", " "))}`)
         setFirstType(PokemonInfo.types[0].type.name)
         setCry(PokemonInfo.cries.latest)
+        console.log(firstType + secondType)
         setSecondType(PokemonInfo.types[1].type.name)
         setImage(PokemonInfo.sprites.other.home.front_default)
         setAbilities(PokemonInfo.abilities)
@@ -55,7 +58,7 @@ const PokemonApp = () => {
         play()
     }
 
-        const PokemonLocation = async (link: string) => {
+        const PokemonLocation = async (link: any) => {
             const LocationArr = await GetLocation(link)
             let LocationNum = Math.floor(Math.random() * LocationArr.length);
             if (LocationArr.length === 0) {
@@ -202,8 +205,16 @@ const PokemonApp = () => {
         }
       }
 
+      function RandomNumber(){
+        setRandom(`${Math.floor(Math.random() * 650)}`);
+      }
+
+      function search(){
+        Pokemon(userInput);
+      }
+
       useEffect(() => {
-        Pokemon();
+        Pokemon('');
       }, []);
 
   return (
@@ -219,8 +230,8 @@ const PokemonApp = () => {
                 <button className="randomBtn rounded-l-md searchBtn" id="randomBtn">
                     <img className='h-[25px]' src="/assets/dice-5.svg" alt="random"/>
                 </button>
-                <input className="text-xl text-black" id="search" placeholder="Search" type="text" />
-                <button className="searchBtn rounded-r-md">
+                <input value={userInput} onChange={ (event) => setUserInput(event.target.value)} className="text-xl text-black" id="search" placeholder="Search" type="text" />
+                <button onClick={search} className="searchBtn rounded-r-md">
                   <img className='h-[25px]' id="searchBtn" src="/assets/search.svg" alt="search" />
                 </button>
             </div>

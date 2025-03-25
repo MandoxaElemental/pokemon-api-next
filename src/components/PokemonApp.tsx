@@ -10,7 +10,7 @@ const PokemonApp = () => {
     const [userInput, setUserInput] = useState('')
     const [id, setId] = useState('')
     const [random, setRandom] = useState('')
-    const [name, setName] = useState('')
+    const [name, setName] = useState('jigglypuff')
     const [firstType, setFirstType] = useState('')
     const [secondType, setSecondType] = useState('')
     const [firstTypePic, setFirstTypePic] = useState('')
@@ -33,8 +33,8 @@ const PokemonApp = () => {
         new Audio(cry).play()
         }
 
-    const Pokemon = async (input: string) => {
-        const PokemonInfo = await FetchData(input);
+    const Pokemon = async () => {
+        const PokemonInfo = await FetchData(name);
         console.log(PokemonInfo)
         setName(`#${PokemonInfo.id} - ${ToUpper(PokemonInfo.name.replaceAll("-", " "))}`)
         setFirstType(PokemonInfo.types[0].type.name)
@@ -58,9 +58,9 @@ const PokemonApp = () => {
         play()
     }
 
-        const PokemonLocation = async (link: any) => {
+        const PokemonLocation = async (link: string) => {
             const LocationArr = await GetLocation(link)
-            let LocationNum = Math.floor(Math.random() * LocationArr.length);
+            const LocationNum = Math.floor(Math.random() * LocationArr.length);
             if (LocationArr.length === 0) {
                 setLocation("N/A")
             } else {
@@ -210,11 +210,15 @@ const PokemonApp = () => {
       }
 
       function search(){
-        Pokemon(userInput);
+        Pokemon();
       }
 
       useEffect(() => {
-        Pokemon('');
+        Pokemon();
+      }, [location, firstTypePic, secondTypePic]);
+
+      useEffect(() => {
+        Pokemon();
       }, []);
 
   return (

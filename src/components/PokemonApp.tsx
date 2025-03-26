@@ -10,16 +10,18 @@ const PokemonApp = () => {
     const [userInput, setUserInput] = useState('')
     const [id, setId] = useState('')
     const [random, setRandom] = useState('')
-    const [name, setName] = useState('jigglypuff')
+    const [name, setName] = useState('zweilous')
     const [firstType, setFirstType] = useState('')
     const [secondType, setSecondType] = useState('')
     const [firstTypePic, setFirstTypePic] = useState('')
     const [secondTypePic, setSecondTypePic] = useState('')
+    const [typeLength, setTypeLength] = useState(1)
     const [cry, setCry] = useState('')
     const [location, setLocation] = useState('')
     const [locationLink, setLocationLink] = useState('')
-    const [image, setImage] = useState('')
     const [abilities, setAbilities] = useState([])
+    const [image, setImage] = useState('')
+    const [defaultImage, setDefaultImage] = useState('')
     const [shiny, setShiny] = useState('')
     const [hp, setHP] = useState('')
     const [attack, setAttack] = useState('')
@@ -28,20 +30,37 @@ const PokemonApp = () => {
     const [spDefense, setSpDefense] = useState('')
     const [speed, setSpeed] = useState('')
     const [moves, setMoves] = useState([])
+    const [shinyBool, setShinyBool] = useState(true)
+    const [doubleType, setDoubleType] = useState(true)
 
     function play(){
         new Audio(cry).play()
         }
 
-    const Pokemon = async () => {
-        const PokemonInfo = await FetchData(name);
+    const Pokemon = async (input: string) => {
+        setShinyBool(true)
+        const PokemonInfo = await FetchData(input);
         console.log(PokemonInfo)
         setName(`#${PokemonInfo.id} - ${ToUpper(PokemonInfo.name.replaceAll("-", " "))}`)
-        setFirstType(PokemonInfo.types[0].type.name)
+        const disableCheck = () => {
+            if(PokemonInfo.types.length === 2){
+                setFirstType(PokemonInfo.types[0].type.name)
+                setSecondType(PokemonInfo.types[1].type.name)
+                Types1()
+                Types2()
+                setDoubleType(true);
+                console.log(doubleType)
+            } else {
+                setFirstType(PokemonInfo.types[0].type.name)
+                Types1()
+                setDoubleType(false);
+                console.log(doubleType)
+            }
+            };
         setCry(PokemonInfo.cries.latest)
-        console.log(firstType + secondType)
-        setSecondType(PokemonInfo.types[1].type.name)
-        setImage(PokemonInfo.sprites.other.home.front_default)
+        setDefaultImage(PokemonInfo.sprites.other.home.front_default)
+        setShiny(PokemonInfo.sprites.other.home.front_shiny)
+        setImage(defaultImage)
         setAbilities(PokemonInfo.abilities)
         setLocationLink(PokemonInfo.location_area_encounters)
         setHP(PokemonInfo.stats[0].base_stat)
@@ -50,17 +69,15 @@ const PokemonApp = () => {
         setSpAttack(PokemonInfo.stats[3].base_stat)
         setSpDefense(PokemonInfo.stats[4].base_stat)
         setSpeed(PokemonInfo.stats[5].base_stat)
-        Types1()
-        Types2()
         setMoves(PokemonInfo.moves)
         PokemonLocation(locationLink)
-        PokemonEvolution(name)
-        play()
+        PokemonEvolution(PokemonInfo.name)
+        disableCheck()
     }
 
-        const PokemonLocation = async (link: string) => {
+        const PokemonLocation = async (link: any) => {
             const LocationArr = await GetLocation(link)
-            const LocationNum = Math.floor(Math.random() * LocationArr.length);
+            let LocationNum = Math.floor(Math.random() * LocationArr.length);
             if (LocationArr.length === 0) {
                 setLocation("N/A")
             } else {
@@ -70,6 +87,18 @@ const PokemonApp = () => {
         const PokemonEvolution = async (link: string) => {
             const Evolution = await EvolutionChain(link)
             console.log(Evolution)
+        }
+
+        function ShinyBtn(){
+            if(shinyBool === true)
+            {
+                setImage(shiny)
+                setShinyBool(false)
+            } else 
+            {
+                setImage(defaultImage)
+                setShinyBool(true)
+            }
         }
 
     function ToUpper(input: string) {
@@ -210,16 +239,20 @@ const PokemonApp = () => {
       }
 
       function search(){
-        Pokemon();
+        Pokemon(userInput);
+        play()
       }
 
       useEffect(() => {
-        Pokemon();
-      }, [location, firstTypePic, secondTypePic]);
+        Pokemon(name);
+      }, []);
 
       useEffect(() => {
-        Pokemon();
-      }, []);
+        Types1()
+        Types2()
+        PokemonLocation(locationLink)
+        setImage(defaultImage)
+      }, [location, firstType, secondType, cry, doubleType]);
 
   return (
     <div>
@@ -255,7 +288,7 @@ const PokemonApp = () => {
         <div className="p-3 mainImg">
           <div className="flex justify-evenly pb-2">
             <img id="type" src={firstTypePic} alt="type1" />
-            <img id="type2" src={secondTypePic} alt="type2" />
+            {doubleType ? <img id="type2" src={secondTypePic} alt="type2" /> : <img className="hidden" id="type2" src={secondTypePic} alt="type2" />}
           </div>
           <div className="flex justify-center">
               <div>
@@ -263,7 +296,7 @@ const PokemonApp = () => {
               </div>
             </div>
             <div>
-                <button id="shiny">
+                <button onClick={ShinyBtn} id="shiny">
                     <img id="shinyIcon" src="/assets/Shiny.png" alt="shiny" />
                 </button>
             </div>

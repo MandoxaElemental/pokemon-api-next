@@ -20,6 +20,7 @@ const PokemonApp = () => {
     const [location, setLocation] = useState('')
     const [locationLink, setLocationLink] = useState('')
     const [abilities, setAbilities] = useState([])
+    const [familyInfo, setFamilyInfo] = useState([])
     const [image, setImage] = useState('')
     const [defaultImage, setDefaultImage] = useState('')
     const [shiny, setShiny] = useState('')
@@ -32,6 +33,9 @@ const PokemonApp = () => {
     const [moves, setMoves] = useState([])
     const [shinyBool, setShinyBool] = useState(true)
     const [doubleType, setDoubleType] = useState(true)
+    const EvolutionArr: string[] = []
+    const EvolutionUrlArr: string[] = []
+    const Varieties: string[] = []
 
     function play(){
         new Audio(cry).play()
@@ -49,12 +53,10 @@ const PokemonApp = () => {
                 Types1()
                 Types2()
                 setDoubleType(true);
-                console.log(doubleType)
             } else {
                 setFirstType(PokemonInfo.types[0].type.name)
                 Types1()
                 setDoubleType(false);
-                console.log(doubleType)
             }
             };
         setCry(PokemonInfo.cries.latest)
@@ -86,7 +88,63 @@ const PokemonApp = () => {
         }
         const PokemonEvolution = async (link: string) => {
             const Evolution = await EvolutionChain(link)
-            console.log(Evolution)
+            const EvolutionLink = (Evolution.evolution_chain.url)
+            const GetEvolutionChain = async () => {
+                const promise = await fetch(EvolutionLink);
+                const data = await promise.json();
+                console.log(data)
+                EvolutionArr.push(data.chain.species.name);
+                EvolutionUrlArr.push(data.chain.species.url);
+                if (data.chain.evolves_to.length !== 0) {
+                  for (let i = 0; i < data.chain.evolves_to.length; i++) {
+                    EvolutionArr.push(data.chain.evolves_to[i].species.name);
+                    EvolutionUrlArr.push(data.chain.evolves_to[i].species.url);
+                    if (data.chain.evolves_to[i].evolves_to.length !== 0) {
+                      for (let j = 0; j < data.chain.evolves_to[i].evolves_to.length; j++)
+                        {
+                        EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].species.name);
+                        EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].species.url);
+                        if (data.chain.evolves_to[i].evolves_to[j].evolves_to.length !== 0) {
+                          for (let k = 0; k < data.chain.evolves_to[i].evolves_to[j].evolves_to.length;k++)
+                            {
+                            EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.name);
+                            EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.url
+                            );
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                console.log(EvolutionArr)
+                console.log(EvolutionUrlArr)
+                const VarietyChain = () =>{
+                    EvolutionUrlArr.map((url: string) => {
+                        let BlankUrl = url;
+                        const Var = async () => {
+                            const promise = await fetch(BlankUrl);
+                            const data = await promise.json();
+                            let Vars = data.varieties
+                            Vars.map((info: string) => {
+                                let Family = info.pokemon.url;
+                                const FamilyPic = async () => {
+                                    const promise = await fetch(Family)
+                                    const data = await promise.json()
+                                    console.log(data)
+                                    let ID = data.id
+                                    Varieties.push(ID)
+                                }
+                                console.log(Varieties)
+                                FamilyPic()
+                            })
+                        }
+                        Var()
+                    })
+                }
+
+                VarietyChain()
+            }
+            GetEvolutionChain()
         }
 
         function ShinyBtn(){
@@ -340,7 +398,12 @@ const PokemonApp = () => {
         
         <div className="family-grid background rounded-xl">
             <h1 className="text-3xl topBar flex justify-center align-middle rounded-t-xl font-bold">Family</h1>
-            <div id="family" className="grid grid-cols-3 familyList gap-2.5 p-5">
+            <div id="family" className="grid grid-cols-3 familyList gap-2.5 p-5 text-black">
+                {Varieties.map((info: string, id: number) => {
+                    return(
+                        <div key={id}>{info}</div>
+                    )
+                })}
             </div>
         </div>
         <div className="moves-grid background rounded-xl">

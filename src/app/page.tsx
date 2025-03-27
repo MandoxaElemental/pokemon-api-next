@@ -1,4 +1,3 @@
-import Image from "next/image";
 import PokemonApp from "@/components/PokemonApp";
 
 export default function Home() {

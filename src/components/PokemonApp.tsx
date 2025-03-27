@@ -5,22 +5,22 @@ import '../styles/style.css'
 import { FetchData } from '@/scripts/apicall'
 import { GetLocation } from '@/scripts/location'
 import { EvolutionChain } from '@/scripts/family'
+import { Drawer, DrawerHeader, DrawerItems } from "flowbite-react";
+import { saveToLocalStorage, getLocalStorage, removeFromLocalStorage } from '@/scripts/LocalStorage'
 
 const PokemonApp = () => {
     const [userInput, setUserInput] = useState('')
-    const [id, setId] = useState('')
-    const [random, setRandom] = useState('')
-    const [name, setName] = useState('zweilous')
+    const [pokemonId, setId] = useState(0)
+    const [randomNum, setRandomNum] = useState('')
+    const [name, setName] = useState('')
     const [firstType, setFirstType] = useState('')
     const [secondType, setSecondType] = useState('')
     const [firstTypePic, setFirstTypePic] = useState('')
     const [secondTypePic, setSecondTypePic] = useState('')
-    const [typeLength, setTypeLength] = useState(1)
     const [cry, setCry] = useState('')
     const [location, setLocation] = useState('')
     const [locationLink, setLocationLink] = useState('')
     const [abilities, setAbilities] = useState([])
-    const [familyInfo, setFamilyInfo] = useState([])
     const [image, setImage] = useState('')
     const [defaultImage, setDefaultImage] = useState('')
     const [shiny, setShiny] = useState('')
@@ -36,6 +36,10 @@ const PokemonApp = () => {
     const EvolutionArr: string[] = []
     const EvolutionUrlArr: string[] = []
     const Varieties: string[] = []
+    const [pokemon, setPokemon] = useState('')
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleClose = () => setIsOpen(false);
 
     function play(){
         new Audio(cry).play()
@@ -45,6 +49,8 @@ const PokemonApp = () => {
         setShinyBool(true)
         const PokemonInfo = await FetchData(input);
         console.log(PokemonInfo)
+        setPokemon(ToUpper(PokemonInfo.name.replaceAll("-", " ")))
+        setId(Number(PokemonInfo.id))
         setName(`#${PokemonInfo.id} - ${ToUpper(PokemonInfo.name.replaceAll("-", " "))}`)
         const disableCheck = () => {
             if(PokemonInfo.types.length === 2){
@@ -77,13 +83,14 @@ const PokemonApp = () => {
         disableCheck()
     }
 
-        const PokemonLocation = async (link: any) => {
+        const PokemonLocation = async (link: string) => {
             const LocationArr = await GetLocation(link)
-            let LocationNum = Math.floor(Math.random() * LocationArr.length);
+            const LocationNum = Math.floor(Math.random() * LocationArr.length);
             if (LocationArr.length === 0) {
                 setLocation("N/A")
             } else {
                 setLocation(ToUpper(LocationArr[LocationNum].location_area.name.replaceAll("-", " ")))
+                console.log(location)
             }
         }
         const PokemonEvolution = async (link: string) => {
@@ -120,21 +127,21 @@ const PokemonApp = () => {
                 console.log(EvolutionUrlArr)
                 const VarietyChain = () =>{
                     EvolutionUrlArr.map((url: string) => {
-                        let BlankUrl = url;
+                        const BlankUrl = url;
                         const Var = async () => {
                             const promise = await fetch(BlankUrl);
                             const data = await promise.json();
-                            let Vars = data.varieties
+                            const Vars = data.varieties
                             Vars.map((info: string) => {
-                                let Family = info.pokemon.url;
+                                const Family = info.pokemon.url;
                                 const FamilyPic = async () => {
                                     const promise = await fetch(Family)
                                     const data = await promise.json()
                                     console.log(data)
-                                    let ID = data.id
+                                    const ID = data.id
                                     Varieties.push(ID)
                                 }
-                                console.log(Varieties)
+
                                 FamilyPic()
                             })
                         }
@@ -292,28 +299,97 @@ const PokemonApp = () => {
         }
       }
 
+      function Next(){
+        if(pokemonId === 649){
+          Pokemon('1')
+        } else {
+          Pokemon((pokemonId + 1).toString())
+        }
+      }
+
+      function Prev(){
+        if(pokemonId === 1){
+          Pokemon('649')
+        } else {
+          Pokemon((pokemonId - 1).toString());
+        }
+      }
+
       function RandomNumber(){
-        setRandom(`${Math.floor(Math.random() * 650)}`);
+        const Num = Math.floor(Math.random() * 650)
+        setRandomNum(Num.toString());
+        Pokemon(randomNum);
       }
 
       function search(){
         Pokemon(userInput);
-        play()
       }
 
       useEffect(() => {
-        Pokemon(name);
+        RandomNumber()
       }, []);
+
+      useEffect(()=> {
+        console.log(randomNum)
+      }, [randomNum])
 
       useEffect(() => {
         Types1()
         Types2()
-        PokemonLocation(locationLink)
         setImage(defaultImage)
-      }, [location, firstType, secondType, cry, doubleType]);
+      }, [firstType, secondType, doubleType]);
+
+      useEffect(() => {
+        PokemonLocation(locationLink)
+      }, [name]);
+
+      useEffect(() => {
+        play()
+      }, [cry]);
+
+      const Save = () => {
+        try {
+          if (typeof window !== "undefined") {
+            const list = getLocalStorage();
+            console.log(list);
+            if (!list.includes(pokemon)) {
+              saveToLocalStorage(pokemon);
+            } else {
+              removeFromLocalStorage(pokemon);
+            }
+          }
+        } catch (error) {
+          console.error("Error while setting token in localStorage:", error);
+        }
+      };
+      
 
   return (
     <div>
+      <div className="w-[100%] bg-white">
+      <Drawer open={isOpen} onClose={handleClose} position="right" className='bg-white'>
+      <DrawerHeader className='text-white' title="Saved" titleIcon={() => <></>} />
+        <DrawerItems className='text-black'>
+          {getLocalStorage().map((names: string, idx: number) => {
+                  return (
+                    <div key={idx} className="flex justify-between pb-5">
+                      <p
+                        className="text-xl font-bold"
+                        onClick={() => search}
+                      >
+                        {names}
+                      </p>
+                      <img
+                        onClick={() => removeFromLocalStorage(names)}
+                        src="/assets/x-lg.svg"
+                        alt="remove"
+                      />
+                    </div>
+                  );
+                })}
+        </DrawerItems>
+      </Drawer>
+      </div>
     <div className='pb-2.5'>
         <div className="top-grid grid auto-cols-auto p-2.5">
           <div className="audio-grid">
@@ -322,7 +398,7 @@ const PokemonApp = () => {
             </button>
           </div>
             <div className="searchBar"> 
-                <button className="randomBtn rounded-l-md searchBtn" id="randomBtn">
+                <button onClick={RandomNumber} className="randomBtn rounded-l-md searchBtn" id="randomBtn">
                     <img className='h-[25px]' src="/assets/dice-5.svg" alt="random"/>
                 </button>
                 <input value={userInput} onChange={ (event) => setUserInput(event.target.value)} className="text-xl text-black" id="search" placeholder="Search" type="text" />
@@ -331,16 +407,16 @@ const PokemonApp = () => {
                 </button>
             </div>
             
-            <button className="savedBtn flex justify-end">
+            <button onClick={() => setIsOpen(true)} className="savedBtn flex justify-end">
                 <img id="savedBtn" src="/assets/2.png" alt="search" />
               </button>
         </div>
       <div className="topBar nameBar grid p-3 ">
-        <div className="flex justify-start text-start"><img id="previous" className="arrow" src="/assets/caret-left-fill.svg" alt="left"/></div>
+        <div className="flex justify-start text-start"><img onClick={Prev} id="previous" className="arrow" src="/assets/caret-left-fill.svg" alt="left"/></div>
         <div className="flex justify-center">
           <h1 className="text-3xl font-bold text-black" id="name">{name}</h1>
         </div>
-        <div className="flex justify-end"><img id="next" className="arrow" src="/assets/caret-right-fill.svg" alt="right"/></div>
+        <div className="flex justify-end"><img onClick={Next} id="next" className="arrow" src="/assets/caret-right-fill.svg" alt="right"/></div>
       </div>
       <div className="grid grid-cols-1 mt-1 sm:grid-cols-2 md:grid-cols-3  sm:m-15 m-0 mb-5 gap-2.5">
         <div className="p-3 mainImg">
@@ -363,7 +439,7 @@ const PokemonApp = () => {
 
         <div className="infoBox text-center rounded-xl">
             <div className="topBar rounded-t-xl grid-cols-3 grid">
-                <img className="notSaved" id="savedPokemon" src="/assets/2Active.svg" alt="saved"/>
+                <img onClick={Save} className="notSaved" id="savedPokemon" src="/assets/2Active.svg" alt="saved"/>
                 <h1 className="text-3xl font-bold">Info</h1>
             </div>
             <div className="p-2.5 text-black">

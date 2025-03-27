@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import '../styles/style.css'
 import { FetchData } from '@/scripts/apicall'
 import { GetLocation } from '@/scripts/location'
-import { EvolutionChain } from '@/scripts/family'
+// import { EvolutionChain } from '@/scripts/family'
 import { Drawer, DrawerHeader, DrawerItems } from "flowbite-react";
 import { saveToLocalStorage, getLocalStorage, removeFromLocalStorage } from '@/scripts/LocalStorage'
 
@@ -33,8 +33,8 @@ const PokemonApp = () => {
     const [moves, setMoves] = useState([])
     const [shinyBool, setShinyBool] = useState(true)
     const [doubleType, setDoubleType] = useState(true)
-    const EvolutionArr: string[] = []
-    const EvolutionUrlArr: string[] = []
+    // const EvolutionArr: string[] = []
+    // const EvolutionUrlArr: string[] = []
     const Varieties: string[] = []
     const [pokemon, setPokemon] = useState('')
     const [isOpen, setIsOpen] = useState(false);
@@ -79,7 +79,7 @@ const PokemonApp = () => {
         setSpeed(PokemonInfo.stats[5].base_stat)
         setMoves(PokemonInfo.moves)
         PokemonLocation(locationLink)
-        PokemonEvolution(PokemonInfo.name)
+        // PokemonEvolution(PokemonInfo.name)
         disableCheck()
     }
 
@@ -93,66 +93,66 @@ const PokemonApp = () => {
                 console.log(location)
             }
         }
-        const PokemonEvolution = async (link: string) => {
-            const Evolution = await EvolutionChain(link)
-            const EvolutionLink = (Evolution.evolution_chain.url)
-            const GetEvolutionChain = async () => {
-                const promise = await fetch(EvolutionLink);
-                const data = await promise.json();
-                console.log(data)
-                EvolutionArr.push(data.chain.species.name);
-                EvolutionUrlArr.push(data.chain.species.url);
-                if (data.chain.evolves_to.length !== 0) {
-                  for (let i = 0; i < data.chain.evolves_to.length; i++) {
-                    EvolutionArr.push(data.chain.evolves_to[i].species.name);
-                    EvolutionUrlArr.push(data.chain.evolves_to[i].species.url);
-                    if (data.chain.evolves_to[i].evolves_to.length !== 0) {
-                      for (let j = 0; j < data.chain.evolves_to[i].evolves_to.length; j++)
-                        {
-                        EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].species.name);
-                        EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].species.url);
-                        if (data.chain.evolves_to[i].evolves_to[j].evolves_to.length !== 0) {
-                          for (let k = 0; k < data.chain.evolves_to[i].evolves_to[j].evolves_to.length;k++)
-                            {
-                            EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.name);
-                            EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.url
-                            );
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-                console.log(EvolutionArr)
-                console.log(EvolutionUrlArr)
-                const VarietyChain = () =>{
-                    EvolutionUrlArr.map((url: string) => {
-                        const BlankUrl = url;
-                        const Var = async () => {
-                            const promise = await fetch(BlankUrl);
-                            const data = await promise.json();
-                            const Vars = data.varieties
-                            Vars.map((info: string) => {
-                                const Family = info.pokemon.url;
-                                const FamilyPic = async () => {
-                                    const promise = await fetch(Family)
-                                    const data = await promise.json()
-                                    console.log(data)
-                                    const ID = data.id
-                                    Varieties.push(ID)
-                                }
+        // const PokemonEvolution = async (link: string) => {
+        //     const Evolution = await EvolutionChain(link)
+        //     const EvolutionLink = (Evolution.evolution_chain.url)
+        //     const GetEvolutionChain = async () => {
+        //         const promise = await fetch(EvolutionLink);
+        //         const data = await promise.json();
+        //         console.log(data)
+        //         EvolutionArr.push(data.chain.species.name);
+        //         EvolutionUrlArr.push(data.chain.species.url);
+        //         if (data.chain.evolves_to.length !== 0) {
+        //           for (let i = 0; i < data.chain.evolves_to.length; i++) {
+        //             EvolutionArr.push(data.chain.evolves_to[i].species.name);
+        //             EvolutionUrlArr.push(data.chain.evolves_to[i].species.url);
+        //             if (data.chain.evolves_to[i].evolves_to.length !== 0) {
+        //               for (let j = 0; j < data.chain.evolves_to[i].evolves_to.length; j++)
+        //                 {
+        //                 EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].species.name);
+        //                 EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].species.url);
+        //                 if (data.chain.evolves_to[i].evolves_to[j].evolves_to.length !== 0) {
+        //                   for (let k = 0; k < data.chain.evolves_to[i].evolves_to[j].evolves_to.length;k++)
+        //                     {
+        //                     EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.name);
+        //                     EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.url
+        //                     );
+        //                   }
+        //                 }
+        //               }
+        //             }
+        //           }
+        //         }
+        //         console.log(EvolutionArr)
+        //         console.log(EvolutionUrlArr)
+        //         const VarietyChain = () =>{
+        //             EvolutionUrlArr.map((url: string) => {
+        //                 const BlankUrl = url;
+        //                 const Var = async () => {
+        //                     const promise = await fetch(BlankUrl);
+        //                     const data = await promise.json();
+        //                     const Vars = data.varieties
+        //                     Vars.map((info: string) => {
+        //                         const Family = info.pokemon.url;
+        //                         const FamilyPic = async () => {
+        //                             const promise = await fetch(Family)
+        //                             const data = await promise.json()
+        //                             console.log(data)
+        //                             const ID = data.id
+        //                             Varieties.push(ID)
+        //                         }
 
-                                FamilyPic()
-                            })
-                        }
-                        Var()
-                    })
-                }
+        //                         FamilyPic()
+        //                     })
+        //                 }
+        //                 Var()
+        //             })
+        //         }
 
-                VarietyChain()
-            }
-            GetEvolutionChain()
-        }
+        //         VarietyChain()
+        //     }
+        //     GetEvolutionChain()
+        // }
 
         function ShinyBtn(){
             if(shinyBool === true)

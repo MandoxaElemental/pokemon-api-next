@@ -20,7 +20,7 @@ const PokemonApp = () => {
     const [cry, setCry] = useState('')
     const [location, setLocation] = useState('')
     const [locationLink, setLocationLink] = useState('')
-    const [abilities, setAbilities] = useState([])
+    const [abilities, setAbilities] = useState<string[]>([])
     const [image, setImage] = useState('')
     const [defaultImage, setDefaultImage] = useState('')
     const [shiny, setShiny] = useState('')
@@ -30,7 +30,7 @@ const PokemonApp = () => {
     const [spAttack, setSpAttack] = useState('')
     const [spDefense, setSpDefense] = useState('')
     const [speed, setSpeed] = useState('')
-    const [moves, setMoves] = useState([])
+    const [moves, setMoves] = useState<string[]>([])
     const [shinyBool, setShinyBool] = useState(true)
     const [doubleType, setDoubleType] = useState(true)
     // const EvolutionArr: string[] = []
@@ -90,7 +90,6 @@ const PokemonApp = () => {
                 setLocation("N/A")
             } else {
                 setLocation(ToUpper(LocationArr[LocationNum].location_area.name.replaceAll("-", " ")))
-                console.log(location)
             }
         }
         // const PokemonEvolution = async (link: string) => {
@@ -302,15 +301,17 @@ const PokemonApp = () => {
       function Next(){
         if(pokemonId === 649){
           Pokemon('1')
-        } else {
+        } else if (pokemonId != 649){
           Pokemon((pokemonId + 1).toString())
+          console.log((pokemonId + 1).toString())
         }
       }
 
       function Prev(){
         if(pokemonId === 1){
           Pokemon('649')
-        } else {
+        } else if (pokemonId != 1) {
+          console.log((pokemonId - 1).toString())
           Pokemon((pokemonId - 1).toString());
         }
       }
@@ -326,11 +327,11 @@ const PokemonApp = () => {
       }
 
       useEffect(() => {
-        RandomNumber()
+        Pokemon('1')
       }, []);
 
       useEffect(()=> {
-        console.log(randomNum)
+        Pokemon(randomNum)
       }, [randomNum])
 
       useEffect(() => {
@@ -445,7 +446,7 @@ const PokemonApp = () => {
             <div className="p-2.5 text-black">
                 <h1 className="text-2xl font-bold">Abilities</h1>
                 <div className="text-lg">
-                {abilities.map((perc: string[], i: number) => {
+                {abilities.map((perc: any, i: number) => {
                 return (
                   <ul key={i}>{ToUpper(perc.ability.name.replaceAll("-", " "))}</ul>
                 )
@@ -475,7 +476,7 @@ const PokemonApp = () => {
         <div className="family-grid background rounded-xl">
             <h1 className="text-3xl topBar flex justify-center align-middle rounded-t-xl font-bold">Family</h1>
             <div id="family" className="grid grid-cols-3 familyList gap-2.5 p-5 text-black">
-                {Varieties.map((info: string, id: number) => {
+                {Varieties.map((info: any, id: number) => {
                     return(
                         <div key={id}>{info}</div>
                     )
@@ -486,7 +487,7 @@ const PokemonApp = () => {
           <h1 className="text-3xl topBar flex justify-center rounded-t-xl font-bold">Moves</h1>
           <div className="moveList text-lg text-center text-black">
             <ul id="list">
-            {moves.map((perc: string[], i: number) => {
+            {moves.map((perc: any, i: number) => {
                 return (
                   <ul key={i}>{ToUpper(perc.move.name.replaceAll("-", " "))}</ul>
                 )

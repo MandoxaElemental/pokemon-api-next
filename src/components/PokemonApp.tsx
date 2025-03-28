@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import '../styles/style.css'
 import { FetchData } from '@/scripts/apicall'
 import { GetLocation } from '@/scripts/location'
-// import { EvolutionChain } from '@/scripts/family'
+import { EvolutionChain } from '@/scripts/family'
 import { Drawer, DrawerHeader, DrawerItems } from "flowbite-react";
 import { saveToLocalStorage, getLocalStorage, removeFromLocalStorage } from '@/scripts/LocalStorage'
 import { AbilityInterface, MoveInterface } from '@/interfaces/interfaces'
@@ -32,14 +32,23 @@ const PokemonApp = () => {
     const [spDefense, setSpDefense] = useState('')
     const [speed, setSpeed] = useState('')
     const [moves, setMoves] = useState<MoveInterface[]>([])
-    // const [evolutionLine, setEvolutionLine] = useState([])
     const [shinyBool, setShinyBool] = useState(true)
     const [doubleType, setDoubleType] = useState(true)
-    // const EvolutionArr: string[] = []
-    // const EvolutionUrlArr: string[] = []
+    const [saved, setSaved] = useState(true)
+    const EvolutionArr: string[] = []
+    const EvolutionUrlArr: string[] = []
     const Varieties: string[] = []
     const [pokemon, setPokemon] = useState('')
     const [isOpen, setIsOpen] = useState(false);
+
+    function SavedBool() {
+      const list = getLocalStorage();
+            if (!list.includes(pokemon)) {
+              setSaved(true)
+            } else {
+              setSaved(false)
+            }
+    }
 
     const handleClose = () => setIsOpen(false);
 
@@ -74,7 +83,8 @@ const PokemonApp = () => {
       "toxtricity",
       "enamorus",
       "maushold",
-      "palafin"
+      "palafin",
+      "keldeo"
     ]
     const SpecialPokemonNum = [
       "386",
@@ -107,7 +117,8 @@ const PokemonApp = () => {
       "849",
       "905",
       "925",
-      "964"
+      "964",
+      "647"
     ]
     const SpecialNamesArr = [
     "ho-oh",
@@ -152,7 +163,8 @@ const PokemonApp = () => {
     "toxtricity-amped",
     "enamorus-incarnate",
     "maushold-family-of-four",
-    "palafin-zero"
+    "palafin-zero",
+    "keldeo-ordinary"
     ]
     const ScreenNameArr = [
     "Ho-oh",
@@ -197,13 +209,16 @@ const PokemonApp = () => {
     "Toxtricity",
     "Enamorus",
     "Maushold",
-    "Palafin"
+    "Palafin",
+    "Keldeo"
     ]
 
     function play(){
         new Audio(cry).play()
         }
-
+    function shinySparkle(){
+        new Audio("/assets/audio/Gen 9 Shiny Sparkle Sound Effect - Pokémon Scarlet and Violet [ ezmp3.cc ].mp3").play()
+        }
 
 
 
@@ -252,7 +267,7 @@ const PokemonApp = () => {
         setSpeed(PokemonInfo.stats[5].base_stat)
         setMoves(PokemonInfo.moves)
         PokemonLocation(locationLink)
-        // PokemonEvolution(PokemonInfo.id)
+        PokemonEvolution(PokemonInfo.id)
         disableCheck()
     }
 
@@ -265,63 +280,48 @@ const PokemonApp = () => {
                 setLocation(ToUpper(LocationArr[LocationNum].location_area.name.replaceAll("-", " ")))
             }
         }
-        // const PokemonEvolution = async (link: string) => {
-        //     const Evolution = await EvolutionChain(link)
-        //     const EvolutionLink = (Evolution.evolution_chain.url)
-        //     const GetEvolutionChain = async () => {
-        //         const promise = await fetch(EvolutionLink);
-        //         const data = await promise.json();
-        //         console.log(data)
-        //         let Info = data.chain.species.name
-        //         setEvolutionLine(Info)
-        //         EvolutionUrlArr.push(data.chain.species.url);
-        //         if (data.chain.evolves_to.length !== 0) {
-        //           for (let i = 0; i < data.chain.evolves_to.length; i++) {
-        //             let Info2 = data.chain.evolves_to[i].species.name
-        //             setEvolutionLine(Info(...Info2))
-        //             EvolutionArr.push(data.chain.evolves_to[i].species.name);
-        //             EvolutionUrlArr.push(data.chain.evolves_to[i].species.url);
-        //             if (data.chain.evolves_to[i].evolves_to.length !== 0) {
-        //               for (let j = 0; j < data.chain.evolves_to[i].evolves_to.length; j++)
-        //                 {
-        //                 EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].species.name);
-        //                 EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].species.url);
-        //                 if (data.chain.evolves_to[i].evolves_to[j].evolves_to.length !== 0) {
-        //                   for (let k = 0; k < data.chain.evolves_to[i].evolves_to[j].evolves_to.length;k++)
-        //                     {
-        //                     EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.name);
-        //                     EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.url
-        //                     );
-        //                   }
-        //                 }
-        //               }
-        //             }
-        //           }
-        //         }
-        //         console.log(EvolutionArr)
-        //         console.log(EvolutionUrlArr)
-        //         const VarietyChain = () =>{
-        //             EvolutionArr.map((pokemon: string) => {
-        //                 const newPokemon = pokemon;
-        //                 const Var = async () => {
-        //                     const promise = await fetch(`https://pokeapi.co/api/v2/pokemon/${newPokemon}`);
-        //                     const data = await promise.json();
-        //                     console.log(data.sprites.other.home.front_default)
-        //                 }
-        //                 Var()
-        //             })
-        //         }
-
-        //         VarietyChain()
-        //     }
-        //     GetEvolutionChain()
-        // }
+        const PokemonEvolution = async (link: string) => {
+            const Evolution = await EvolutionChain(link)
+            const EvolutionLink = (Evolution.evolution_chain.url)
+            const GetEvolutionChain = async () => {
+                const promise = await fetch(EvolutionLink);
+                const data = await promise.json();
+                console.log(data)
+                EvolutionArr.push(data.chain.species.name);
+                EvolutionUrlArr.push(data.chain.species.url);
+                if (data.chain.evolves_to.length !== 0) {
+                  for (let i = 0; i < data.chain.evolves_to.length; i++) {
+                    EvolutionArr.push(data.chain.evolves_to[i].species.name);
+                    EvolutionUrlArr.push(data.chain.evolves_to[i].species.url);
+                    if (data.chain.evolves_to[i].evolves_to.length !== 0) {
+                      for (let j = 0; j < data.chain.evolves_to[i].evolves_to.length; j++)
+                        {
+                        EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].species.name);
+                        EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].species.url);
+                        if (data.chain.evolves_to[i].evolves_to[j].evolves_to.length !== 0) {
+                          for (let k = 0; k < data.chain.evolves_to[i].evolves_to[j].evolves_to.length;k++)
+                            {
+                            EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.name);
+                            EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.url
+                            );
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                console.log(EvolutionArr)
+                console.log(EvolutionUrlArr)
+            }
+            GetEvolutionChain()
+        }
 
         function ShinyBtn(){
             if(shinyBool === true)
             {
                 setImage(shiny)
                 setShinyBool(false)
+                shinySparkle()
             } else 
             {
                 setImage(defaultImage)
@@ -507,6 +507,7 @@ const PokemonApp = () => {
         Types2()
         setImage(defaultImage)
         PokemonLocation(locationLink)
+        SavedBool()
       }, [name]);
 
       useEffect(() => {
@@ -520,9 +521,11 @@ const PokemonApp = () => {
             if (!list.includes(pokemon)) {
               saveToLocalStorage(pokemon);
               console.log(list);
+              SavedBool()
             } else {
               removeFromLocalStorage(pokemon);
               console.log(list);
+              SavedBool()
             }
           }
         } catch (error) {
@@ -534,15 +537,15 @@ const PokemonApp = () => {
   return (
     <div>
       <div className="w-[100%] bg-white">
-      <Drawer open={isOpen} onClose={handleClose} position="right" className='bg-white'>
+      <Drawer open={isOpen} onClose={handleClose} position="right" className='dark:bg-[white]'>
       <DrawerHeader className='text-white' title="Saved" titleIcon={() => <></>} />
-        <DrawerItems className='text-black'>
+        <DrawerItems className="dark:text-black">
           {getLocalStorage().map((names: string, idx: number) => {
                   return (
                     <div key={idx} className="flex justify-between pb-5">
                       <p
                         className="text-xl font-bold"
-                        onClick={() => search}
+                        onClick={() => Pokemon(names)}
                       >
                         {names}
                       </p>
@@ -598,7 +601,7 @@ const PokemonApp = () => {
             </div>
             <div>
                 <button onClick={ShinyBtn} id="shiny">
-                    <img id="shinyIcon" src="/assets/Shiny.png" alt="shiny" />
+                    <img id="shinyIcon" src={shinyBool ? "/assets/Shiny.png" : "/assets/ShinyActive.png"} alt="shiny" />
                 </button>
             </div>
         </div>
@@ -606,7 +609,7 @@ const PokemonApp = () => {
 
         <div className="infoBox text-center rounded-xl">
             <div className="topBar rounded-t-xl grid-cols-3 grid">
-                <img onClick={Save} className="notSaved" id="savedPokemon" src="/assets/2Active.svg" alt="saved"/>
+                <img onClick={Save} className="notSaved" id="savedPokemon" src={saved ? "/assets/2.svg" : "/assets/2Active.svg"} alt="saved"/>
                 <h1 className="text-3xl font-bold">Info</h1>
             </div>
             <div className="p-2.5 text-black">

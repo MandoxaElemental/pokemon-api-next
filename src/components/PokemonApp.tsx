@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import '../styles/style.css'
 import { FetchData } from '@/scripts/apicall'
 import { GetLocation } from '@/scripts/location'
-import { EvolutionChain } from '@/scripts/family'
+// import { EvolutionChain } from '@/scripts/family'
 import { Drawer, DrawerHeader, DrawerItems } from "flowbite-react";
 import { saveToLocalStorage, getLocalStorage, removeFromLocalStorage } from '@/scripts/LocalStorage'
 import { AbilityInterface, MoveInterface } from '@/interfaces/interfaces'

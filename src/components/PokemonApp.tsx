@@ -32,11 +32,11 @@ const PokemonApp = () => {
     const [spDefense, setSpDefense] = useState('')
     const [speed, setSpeed] = useState('')
     const [moves, setMoves] = useState<MoveInterface[]>([])
-    const [evolutionLine, setEvolutionLine] = useState([])
+    // const [evolutionLine, setEvolutionLine] = useState([])
     const [shinyBool, setShinyBool] = useState(true)
     const [doubleType, setDoubleType] = useState(true)
-    const EvolutionArr: string[] = []
-    const EvolutionUrlArr: string[] = []
+    // const EvolutionArr: string[] = []
+    // const EvolutionUrlArr: string[] = []
     const Varieties: string[] = []
     const [pokemon, setPokemon] = useState('')
     const [isOpen, setIsOpen] = useState(false);

@@ -7,6 +7,7 @@ import { GetLocation } from '@/scripts/location'
 // import { EvolutionChain } from '@/scripts/family'
 import { Drawer, DrawerHeader, DrawerItems } from "flowbite-react";
 import { saveToLocalStorage, getLocalStorage, removeFromLocalStorage } from '@/scripts/LocalStorage'
+import { AbilityInterface, MoveInterface } from '@/interfaces/interfaces'
 
 const PokemonApp = () => {
     const [userInput, setUserInput] = useState('')
@@ -20,7 +21,7 @@ const PokemonApp = () => {
     const [cry, setCry] = useState('')
     const [location, setLocation] = useState('')
     const [locationLink, setLocationLink] = useState('')
-    const [abilities, setAbilities] = useState<string[]>([])
+    const [abilityArr, setAbilityArr] = useState<AbilityInterface[]>([])
     const [image, setImage] = useState('')
     const [defaultImage, setDefaultImage] = useState('')
     const [shiny, setShiny] = useState('')
@@ -30,7 +31,7 @@ const PokemonApp = () => {
     const [spAttack, setSpAttack] = useState('')
     const [spDefense, setSpDefense] = useState('')
     const [speed, setSpeed] = useState('')
-    const [moves, setMoves] = useState<string[]>([])
+    const [moves, setMoves] = useState<MoveInterface[]>([])
     const [shinyBool, setShinyBool] = useState(true)
     const [doubleType, setDoubleType] = useState(true)
     // const EvolutionArr: string[] = []
@@ -69,7 +70,7 @@ const PokemonApp = () => {
         setDefaultImage(PokemonInfo.sprites.other.home.front_default)
         setShiny(PokemonInfo.sprites.other.home.front_shiny)
         setImage(defaultImage)
-        setAbilities(PokemonInfo.abilities)
+        setAbilityArr(PokemonInfo.abilities)
         setLocationLink(PokemonInfo.location_area_encounters)
         setHP(PokemonInfo.stats[0].base_stat)
         setAttack(PokemonInfo.stats[1].base_stat)
@@ -303,7 +304,6 @@ const PokemonApp = () => {
           Pokemon('1')
         } else if (pokemonId != 649){
           Pokemon((pokemonId + 1).toString())
-          console.log((pokemonId + 1).toString())
         }
       }
 
@@ -311,7 +311,6 @@ const PokemonApp = () => {
         if(pokemonId === 1){
           Pokemon('649')
         } else if (pokemonId != 1) {
-          console.log((pokemonId - 1).toString())
           Pokemon((pokemonId - 1).toString());
         }
       }
@@ -326,13 +325,13 @@ const PokemonApp = () => {
         Pokemon(userInput);
       }
 
-      useEffect(() => {
-        Pokemon('1')
-      }, []);
-
       useEffect(()=> {
         Pokemon(randomNum)
       }, [randomNum])
+
+      useEffect(()=> {
+        Pokemon('1')
+      }, [])
 
       useEffect(() => {
         Types1()
@@ -446,7 +445,7 @@ const PokemonApp = () => {
             <div className="p-2.5 text-black">
                 <h1 className="text-2xl font-bold">Abilities</h1>
                 <div className="text-lg">
-                {abilities.map((perc: any, i: number) => {
+                {abilityArr.map((perc, i) => {
                 return (
                   <ul key={i}>{ToUpper(perc.ability.name.replaceAll("-", " "))}</ul>
                 )
@@ -476,7 +475,7 @@ const PokemonApp = () => {
         <div className="family-grid background rounded-xl">
             <h1 className="text-3xl topBar flex justify-center align-middle rounded-t-xl font-bold">Family</h1>
             <div id="family" className="grid grid-cols-3 familyList gap-2.5 p-5 text-black">
-                {Varieties.map((info: any, id: number) => {
+                {Varieties.map((info: string, id: number) => {
                     return(
                         <div key={id}>{info}</div>
                     )
@@ -487,7 +486,7 @@ const PokemonApp = () => {
           <h1 className="text-3xl topBar flex justify-center rounded-t-xl font-bold">Moves</h1>
           <div className="moveList text-lg text-center text-black">
             <ul id="list">
-            {moves.map((perc: any, i: number) => {
+            {moves.map((perc, i) => {
                 return (
                   <ul key={i}>{ToUpper(perc.move.name.replaceAll("-", " "))}</ul>
                 )

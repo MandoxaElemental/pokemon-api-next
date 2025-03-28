@@ -252,7 +252,7 @@ const PokemonApp = () => {
         setSpeed(PokemonInfo.stats[5].base_stat)
         setMoves(PokemonInfo.moves)
         PokemonLocation(locationLink)
-        PokemonEvolution(PokemonInfo.id)
+        // PokemonEvolution(PokemonInfo.id)
         disableCheck()
     }
 
@@ -265,57 +265,57 @@ const PokemonApp = () => {
                 setLocation(ToUpper(LocationArr[LocationNum].location_area.name.replaceAll("-", " ")))
             }
         }
-        const PokemonEvolution = async (link: string) => {
-            const Evolution = await EvolutionChain(link)
-            const EvolutionLink = (Evolution.evolution_chain.url)
-            const GetEvolutionChain = async () => {
-                const promise = await fetch(EvolutionLink);
-                const data = await promise.json();
-                console.log(data)
-                let Info = data.chain.species.name
-                setEvolutionLine(Info)
-                EvolutionUrlArr.push(data.chain.species.url);
-                if (data.chain.evolves_to.length !== 0) {
-                  for (let i = 0; i < data.chain.evolves_to.length; i++) {
-                    let Info2 = data.chain.evolves_to[i].species.name
-                    setEvolutionLine(Info(...Info2))
-                    EvolutionArr.push(data.chain.evolves_to[i].species.name);
-                    EvolutionUrlArr.push(data.chain.evolves_to[i].species.url);
-                    if (data.chain.evolves_to[i].evolves_to.length !== 0) {
-                      for (let j = 0; j < data.chain.evolves_to[i].evolves_to.length; j++)
-                        {
-                        EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].species.name);
-                        EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].species.url);
-                        if (data.chain.evolves_to[i].evolves_to[j].evolves_to.length !== 0) {
-                          for (let k = 0; k < data.chain.evolves_to[i].evolves_to[j].evolves_to.length;k++)
-                            {
-                            EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.name);
-                            EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.url
-                            );
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-                console.log(EvolutionArr)
-                console.log(EvolutionUrlArr)
-                const VarietyChain = () =>{
-                    EvolutionArr.map((pokemon: string) => {
-                        const newPokemon = pokemon;
-                        const Var = async () => {
-                            const promise = await fetch(`https://pokeapi.co/api/v2/pokemon/${newPokemon}`);
-                            const data = await promise.json();
-                            console.log(data.sprites.other.home.front_default)
-                        }
-                        Var()
-                    })
-                }
+        // const PokemonEvolution = async (link: string) => {
+        //     const Evolution = await EvolutionChain(link)
+        //     const EvolutionLink = (Evolution.evolution_chain.url)
+        //     const GetEvolutionChain = async () => {
+        //         const promise = await fetch(EvolutionLink);
+        //         const data = await promise.json();
+        //         console.log(data)
+        //         let Info = data.chain.species.name
+        //         setEvolutionLine(Info)
+        //         EvolutionUrlArr.push(data.chain.species.url);
+        //         if (data.chain.evolves_to.length !== 0) {
+        //           for (let i = 0; i < data.chain.evolves_to.length; i++) {
+        //             let Info2 = data.chain.evolves_to[i].species.name
+        //             setEvolutionLine(Info(...Info2))
+        //             EvolutionArr.push(data.chain.evolves_to[i].species.name);
+        //             EvolutionUrlArr.push(data.chain.evolves_to[i].species.url);
+        //             if (data.chain.evolves_to[i].evolves_to.length !== 0) {
+        //               for (let j = 0; j < data.chain.evolves_to[i].evolves_to.length; j++)
+        //                 {
+        //                 EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].species.name);
+        //                 EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].species.url);
+        //                 if (data.chain.evolves_to[i].evolves_to[j].evolves_to.length !== 0) {
+        //                   for (let k = 0; k < data.chain.evolves_to[i].evolves_to[j].evolves_to.length;k++)
+        //                     {
+        //                     EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.name);
+        //                     EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.url
+        //                     );
+        //                   }
+        //                 }
+        //               }
+        //             }
+        //           }
+        //         }
+        //         console.log(EvolutionArr)
+        //         console.log(EvolutionUrlArr)
+        //         const VarietyChain = () =>{
+        //             EvolutionArr.map((pokemon: string) => {
+        //                 const newPokemon = pokemon;
+        //                 const Var = async () => {
+        //                     const promise = await fetch(`https://pokeapi.co/api/v2/pokemon/${newPokemon}`);
+        //                     const data = await promise.json();
+        //                     console.log(data.sprites.other.home.front_default)
+        //                 }
+        //                 Var()
+        //             })
+        //         }
 
-                VarietyChain()
-            }
-            GetEvolutionChain()
-        }
+        //         VarietyChain()
+        //     }
+        //     GetEvolutionChain()
+        // }
 
         function ShinyBtn(){
             if(shinyBool === true)

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import '../styles/style.css'
 import { FetchData } from '@/scripts/apicall'
 import { GetLocation } from '@/scripts/location'
-// import { EvolutionChain } from '@/scripts/family'
+import { EvolutionChain } from '@/scripts/family'
 import { Drawer, DrawerHeader, DrawerItems } from "flowbite-react";
 import { saveToLocalStorage, getLocalStorage, removeFromLocalStorage } from '@/scripts/LocalStorage'
 import { AbilityInterface, MoveInterface } from '@/interfaces/interfaces'
@@ -32,27 +32,199 @@ const PokemonApp = () => {
     const [spDefense, setSpDefense] = useState('')
     const [speed, setSpeed] = useState('')
     const [moves, setMoves] = useState<MoveInterface[]>([])
+    const [evolutionLine, setEvolutionLine] = useState([])
     const [shinyBool, setShinyBool] = useState(true)
     const [doubleType, setDoubleType] = useState(true)
-    // const EvolutionArr: string[] = []
-    // const EvolutionUrlArr: string[] = []
+    const EvolutionArr: string[] = []
+    const EvolutionUrlArr: string[] = []
     const Varieties: string[] = []
     const [pokemon, setPokemon] = useState('')
     const [isOpen, setIsOpen] = useState(false);
 
     const handleClose = () => setIsOpen(false);
 
+    const SpecialPokemonArr = [
+      "deoxys",
+      "wormadam",
+      "shaymin",
+      "giratina",
+      "basculin",
+      "darmanitan",
+      "meloetta",
+      "tornadus",
+      "thundurus",
+      "landorus",
+      "basculegion",
+      "dudunsparce",
+      "tatsugiri",
+      "oricorio",
+      "aegislash",
+      "urshifu",
+      "zygarde",
+      "indeedee",
+      "meowstic",
+      "oinkologne",
+      "wishiwashi",
+      "gourgeist",
+      "squawkabilly",
+      "lycanroc",
+      "farfetchd",
+      "sirfetchd",
+      "type null",
+      "toxtricity",
+      "enamorus",
+      "maushold",
+      "palafin"
+    ]
+    const SpecialPokemonNum = [
+      "386",
+      "413",
+      "492",
+      "487",
+      "550",
+      "555",
+      "648",
+      "641",
+      "642",
+      "645",
+      "902",
+      "982",
+      "978",
+      "741",
+      "681",
+      "892",
+      "718",
+      "876",
+      "678",
+      "916",
+      "746",
+      "711",
+      "931",
+      "745",
+      "83",
+      "865",
+      "772",
+      "849",
+      "905",
+      "925",
+      "964"
+    ]
+    const SpecialNamesArr = [
+    "ho-oh",
+    "porygon-z",
+    "jangmo-o",
+    "hakamo-o",
+    "kommo-o",
+    "wo-chien",
+    "chien-pao",
+    "ting-lu",
+    "chi-yu",
+    "deoxys-normal",
+    "wormadam-plant",
+    "shaymin-land",
+    "giratina-altered",
+    "basculin-red-striped",
+    "darmanitan-standard",
+    "meloetta-aria",
+    "tornadus-incarnate",
+    "thundurus-incarnate",
+    "landorus-incarnate",
+    "mime-jr",
+    "mr-mime",
+    "mr-rime",
+    "basculegion-male",
+    "dudunsparce-two-segment",
+    "tatsugiri-curly",
+    "oricorio-baille",
+    "aegislash-shield",
+    "urshifu-single-strike",
+    "zygarde-50",
+    "indeedee-male",
+    "meowstic-male",
+    "oinkologne-male",
+    "wishiwashi-solo",
+    "gourgeist-average",
+    "squawkabilly-green-plumage",
+    "lycanroc-midday",
+    "farfetchd",
+    "sirfetchd",
+    "type-null",
+    "toxtricity-amped",
+    "enamorus-incarnate",
+    "maushold-family-of-four",
+    "palafin-zero"
+    ]
+    const ScreenNameArr = [
+    "Ho-oh",
+    "Porygon-z",
+    "Jangmo-o",
+    "Hakamo-o",
+    "Kommo-o",
+    "Wo-Chien",
+    "Chien-Pao",
+    "Ting-Lu",
+    "Chi-Yu",
+    "Deoxys",
+    "Wormadam",
+    "Shaymin",
+    "Giratina",
+    "Basculin",
+    "Darmanitan",
+    "Meloetta",
+    "Tornadus",
+    "Thundurus",
+    "Landorus",
+    "Mime Jr.",
+    "Mr. Mime",
+    "Mr. Rime",
+    "Basculegion",
+    "Dudunsparce",
+    "Tatsugiri",
+    "Oricorio",
+    "Aegislash",
+    "Urshifu",
+    "Zygarde",
+    "Indeedee",
+    "Meowstic",
+    "Oinkologne",
+    "Wishiwashi",
+    "Gourgeist",
+    "Squawkabilly",
+    "Lycanroc",
+    "Farfetch'd",
+    "Sirfetch'd",
+    "Type: Null",
+    "Toxtricity",
+    "Enamorus",
+    "Maushold",
+    "Palafin"
+    ]
+
     function play(){
         new Audio(cry).play()
         }
+
+
+
 
     const Pokemon = async (input: string) => {
         setShinyBool(true)
         const PokemonInfo = await FetchData(input);
         console.log(PokemonInfo)
-        setPokemon(ToUpper(PokemonInfo.name.replaceAll("-", " ")))
+        function SpecificNames() {
+          for(let i=0; i<SpecialNamesArr.length; i++)
+          if (PokemonInfo.name === SpecialNamesArr[i]) {
+            setName("#" + PokemonInfo.id + " - " + ScreenNameArr[i])
+            setPokemon(ScreenNameArr[i]);
+            break;
+          } else {
+            setPokemon(ToUpper(PokemonInfo.name.replaceAll("-", " ")))
+            setName(`#${PokemonInfo.id} - ${ToUpper(PokemonInfo.name.replaceAll("-", " "))}`)
+              setPokemon(ToUpper(PokemonInfo.name.replaceAll("-", " ")))
+          }
+        }
+        SpecificNames()
         setId(Number(PokemonInfo.id))
-        setName(`#${PokemonInfo.id} - ${ToUpper(PokemonInfo.name.replaceAll("-", " "))}`)
         const disableCheck = () => {
             if(PokemonInfo.types.length === 2){
                 setFirstType(PokemonInfo.types[0].type.name)
@@ -80,7 +252,7 @@ const PokemonApp = () => {
         setSpeed(PokemonInfo.stats[5].base_stat)
         setMoves(PokemonInfo.moves)
         PokemonLocation(locationLink)
-        // PokemonEvolution(PokemonInfo.name)
+        PokemonEvolution(PokemonInfo.id)
         disableCheck()
     }
 
@@ -93,66 +265,57 @@ const PokemonApp = () => {
                 setLocation(ToUpper(LocationArr[LocationNum].location_area.name.replaceAll("-", " ")))
             }
         }
-        // const PokemonEvolution = async (link: string) => {
-        //     const Evolution = await EvolutionChain(link)
-        //     const EvolutionLink = (Evolution.evolution_chain.url)
-        //     const GetEvolutionChain = async () => {
-        //         const promise = await fetch(EvolutionLink);
-        //         const data = await promise.json();
-        //         console.log(data)
-        //         EvolutionArr.push(data.chain.species.name);
-        //         EvolutionUrlArr.push(data.chain.species.url);
-        //         if (data.chain.evolves_to.length !== 0) {
-        //           for (let i = 0; i < data.chain.evolves_to.length; i++) {
-        //             EvolutionArr.push(data.chain.evolves_to[i].species.name);
-        //             EvolutionUrlArr.push(data.chain.evolves_to[i].species.url);
-        //             if (data.chain.evolves_to[i].evolves_to.length !== 0) {
-        //               for (let j = 0; j < data.chain.evolves_to[i].evolves_to.length; j++)
-        //                 {
-        //                 EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].species.name);
-        //                 EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].species.url);
-        //                 if (data.chain.evolves_to[i].evolves_to[j].evolves_to.length !== 0) {
-        //                   for (let k = 0; k < data.chain.evolves_to[i].evolves_to[j].evolves_to.length;k++)
-        //                     {
-        //                     EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.name);
-        //                     EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.url
-        //                     );
-        //                   }
-        //                 }
-        //               }
-        //             }
-        //           }
-        //         }
-        //         console.log(EvolutionArr)
-        //         console.log(EvolutionUrlArr)
-        //         const VarietyChain = () =>{
-        //             EvolutionUrlArr.map((url: string) => {
-        //                 const BlankUrl = url;
-        //                 const Var = async () => {
-        //                     const promise = await fetch(BlankUrl);
-        //                     const data = await promise.json();
-        //                     const Vars = data.varieties
-        //                     Vars.map((info: string) => {
-        //                         const Family = info.pokemon.url;
-        //                         const FamilyPic = async () => {
-        //                             const promise = await fetch(Family)
-        //                             const data = await promise.json()
-        //                             console.log(data)
-        //                             const ID = data.id
-        //                             Varieties.push(ID)
-        //                         }
+        const PokemonEvolution = async (link: string) => {
+            const Evolution = await EvolutionChain(link)
+            const EvolutionLink = (Evolution.evolution_chain.url)
+            const GetEvolutionChain = async () => {
+                const promise = await fetch(EvolutionLink);
+                const data = await promise.json();
+                console.log(data)
+                let Info = data.chain.species.name
+                setEvolutionLine(Info)
+                EvolutionUrlArr.push(data.chain.species.url);
+                if (data.chain.evolves_to.length !== 0) {
+                  for (let i = 0; i < data.chain.evolves_to.length; i++) {
+                    let Info2 = data.chain.evolves_to[i].species.name
+                    setEvolutionLine(Info(...Info2))
+                    EvolutionArr.push(data.chain.evolves_to[i].species.name);
+                    EvolutionUrlArr.push(data.chain.evolves_to[i].species.url);
+                    if (data.chain.evolves_to[i].evolves_to.length !== 0) {
+                      for (let j = 0; j < data.chain.evolves_to[i].evolves_to.length; j++)
+                        {
+                        EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].species.name);
+                        EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].species.url);
+                        if (data.chain.evolves_to[i].evolves_to[j].evolves_to.length !== 0) {
+                          for (let k = 0; k < data.chain.evolves_to[i].evolves_to[j].evolves_to.length;k++)
+                            {
+                            EvolutionArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.name);
+                            EvolutionUrlArr.push(data.chain.evolves_to[i].evolves_to[j].evolves_to[k].species.url
+                            );
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                console.log(EvolutionArr)
+                console.log(EvolutionUrlArr)
+                const VarietyChain = () =>{
+                    EvolutionArr.map((pokemon: string) => {
+                        const newPokemon = pokemon;
+                        const Var = async () => {
+                            const promise = await fetch(`https://pokeapi.co/api/v2/pokemon/${newPokemon}`);
+                            const data = await promise.json();
+                            console.log(data.sprites.other.home.front_default)
+                        }
+                        Var()
+                    })
+                }
 
-        //                         FamilyPic()
-        //                     })
-        //                 }
-        //                 Var()
-        //             })
-        //         }
-
-        //         VarietyChain()
-        //     }
-        //     GetEvolutionChain()
-        // }
+                VarietyChain()
+            }
+            GetEvolutionChain()
+        }
 
         function ShinyBtn(){
             if(shinyBool === true)
@@ -322,7 +485,13 @@ const PokemonApp = () => {
       }
 
       function search(){
-        Pokemon(userInput);
+        for (let i=0; i < SpecialPokemonNum.length; i++){
+          if(userInput.toLowerCase() === SpecialPokemonArr[i] || userInput === SpecialPokemonNum[i]){
+            Pokemon(SpecialPokemonNum[i]);
+          } else {
+            Pokemon(userInput);
+          }
+        }
       }
 
       useEffect(()=> {
@@ -337,9 +506,6 @@ const PokemonApp = () => {
         Types1()
         Types2()
         setImage(defaultImage)
-      }, [firstType, secondType, doubleType]);
-
-      useEffect(() => {
         PokemonLocation(locationLink)
       }, [name]);
 
@@ -351,11 +517,12 @@ const PokemonApp = () => {
         try {
           if (typeof window !== "undefined") {
             const list = getLocalStorage();
-            console.log(list);
             if (!list.includes(pokemon)) {
               saveToLocalStorage(pokemon);
+              console.log(list);
             } else {
               removeFromLocalStorage(pokemon);
+              console.log(list);
             }
           }
         } catch (error) {

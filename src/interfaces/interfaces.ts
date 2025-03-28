@@ -13,3 +13,7 @@ export interface MoveInterface{
         url: string
     }
 }
+
+export interface FamilyInterface{
+    
+}
